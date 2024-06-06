@@ -1,0 +1,159 @@
+{%extends "base.html"%}
+
+{%block content%}
+    <div class="nome-the-dett">
+        <h1>{{ the.nome }}</h1>
+    </div>
+    {% if user.is_authenticated  %}
+    
+        {% if preferito %}
+            <form action="" method="post">
+                {% csrf_token %}
+                <div class="add-prefe">
+                    <button class="prefe-btn" type="submit" name="del-prefe">Rimuovi da i preferiti</button>
+                </div>
+            </form>
+                
+        {% else %}
+            <form action="" method="post">
+                {% csrf_token %}
+                <div class="add-prefe">
+                    <button class="prefe-btn" type="submit" name="add-prefe">Aggiungi tra i preferiti</button>
+                </div>
+            </form>
+        {% endif %}
+    {% endif %}
+    
+
+    <div class="immagine-the-dett">
+        <img src="{{ the.immagine.url }}">
+    </div>
+
+    <div class="descrizione-div-dett">
+        <div class="descr-title-dett">
+            <h2>Descrizione</h2>
+        </div>
+        <div class="descrizione-the-dett">{{ the.descrizione }}</div>
+    </div>
+
+    <div class="recensioni-div">
+        <h2>Recensioni</h2>
+        {% if recensioni %}
+            {% for recensione in recensioni %}
+                <div class="rece">
+                    <div class="top-rece">
+                        <div class="utente-rece"> 
+                            {{ recensione.id_utente.username }}
+                        </div>
+                        <div class="data-rece">
+                            {{ recensione.data }}
+                        </div>
+                    </div>
+
+                    <div class="middle-rece">
+                        <div class="commento-rece">
+                            {{ recensione.commento }}
+                        </div>
+                    </div>
+                    <div class="bottom-rece">
+                        <div class="stelle-rece">
+                            {{ recensione.voto }}
+                        </div>
+                    </div>
+                </div>
+                    
+            {% endfor %}
+        {% else %}
+            <p>Non ci sono recensioni</p>
+        {% endif %}
+    </div>
+
+    {% if user.is_authenticated  %}
+        <form action="" method="post">
+            {% csrf_token %}
+            <div class="commento-div-dett">
+                <div class="comm-title-dett">
+                    <h2>Aggiungi una recensione</h2>
+                </div>
+                <div class="commento-text-div">
+                    <textarea name="commento-input" id="commentoInput" placeholder="Inserisci il commento"></textarea>
+                </div>
+                <div class="rating-div">
+                    <i class="fas fa-star fa-3x" id="0"></i>
+                    <i class="fas fa-star fa-3x" id="1"></i>
+                    <i class="fas fa-star fa-3x" id="2"></i>
+                    <i class="fas fa-star fa-3x" id="3"></i>
+                    <i class="fas fa-star fa-3x" id="4"></i>
+                </div>
+                <input type="number" name="starsNumber" style="display:none" id="starsNumber">
+            </div>
+            <div class="bottom-form">
+                <button type="submit" class="invia-btn" name="add-rece">Invia commento</button>
+            </div>
+        </form>
+    {% endif %}
+    
+<script>
+    const stars = document.querySelectorAll(".fa-star");
+    const inputStars = document.getElementById("starsNumber");
+    if(inputStars){
+        inputStars.value=0;
+    }
+    
+
+    const cleanStars = (index) => {
+        for(let i=index; i<5; i++){
+            document.getElementById(i).style.color = 'grey';
+        }
+    }
+
+    const colorStars = (index) => {
+        for(let i=0; i<=index; i++){
+            document.getElementById(i).style.color = 'gold';
+        }
+    }
+    
+    let clicked = false;
+    let star_clicked = 0;
+
+    stars.forEach((star)=>{
+
+        star.onmouseover = () => {
+            colorStars(star.id);
+        }
+
+        star.onmouseleave = () => {
+            cleanStars(star_clicked);
+        }
+
+        star.onclick = () => {
+            star_clicked = parseInt(star.id)+1;
+            inputStars.value=star_clicked;
+            if(!clicked){
+                colorStars(star.id);
+                clicked=true;
+            }else{
+                star_clicked = 0;
+                cleanStars(star_clicked);
+                clicked= false;
+                
+            }
+        }
+            
+    })
+
+    const starTemplate = `
+    <i class="fas fa-star fa-2x" style="color:gold;"></i>`;
+    const stelleRece = document.querySelectorAll(".stelle-rece");
+    console.log(stelleRece)
+    stelleRece.forEach((rece)=>{
+        const valueRece = parseInt(rece.innerHTML);
+        rece.innerHTML="";
+        for (let i=0; i<valueRece; i++){
+            rece.innerHTML+=starTemplate;
+        }
+    })
+    
+    
+</script>
+{%endblock%}

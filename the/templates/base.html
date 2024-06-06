@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {%load static%}
+    <link rel="stylesheet" href="{% static 'the/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    
+</head>
+
+<body>
+    <nav class="navbar">
+        <div>
+            <a href="/the/"><img id="logo" src="{% static 'the/logo.jpeg' %}"></a>
+
+        </div>
+        
+        <div class="right-nav">
+            {% if user.is_authenticated  %}
+                <a href="/the/logout" class="login">Log out</a>
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <button class="login" type="submit" name="preferiti">Preferiti</button>
+                </form>
+                <div class="user-div">
+                    <i class="fas fa-user-alt user fa-2x"></i>
+                    <div class="user-details">
+                        <div class="user-details-username">
+                            Username: {{ user.username }}
+                        </div>
+                        <div class="user-details-tipo">
+                            Tipo: {{ user.utente.tipo }}
+                        </div>
+                    </div>
+                </div>
+                
+                {% if user.utente.tipo == 'admin' %}
+                <a href="/the/addthe">
+                    <i class="fas fa-plus plus fa-2x"></i>
+                </a>
+                    
+                {% endif %}
+            {% else %}
+                <a href="/the/login" class="login">Log in</a>
+            {% endif %}
+        </div>
+        
+    </nav>
+
+    
+    
+    {% block content %}{% endblock %}
+</body>
+</html>

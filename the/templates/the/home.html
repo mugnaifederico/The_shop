@@ -1,0 +1,61 @@
+{%extends "base.html"%}
+
+{%block content%}
+
+{% if thes %}
+    <div class="the-content">
+        {% for element in thes %}
+            <a href="{% url 'dettaglio' id=element.id %}">
+                <div class="the">
+                
+                    <div class="top-the">
+                        <div class="nome-the">
+                            {{ element.nome }}
+                        </div>
+                        <div class="provenienza-the">
+                            <i class="fas fa-map-marker-alt"></i>
+                            {{ element.provenienza }}
+                        </div>
+                    </div>
+        
+                    <div class="middle-the">
+                        <img src="{{ element.immagine.url }}">
+                        
+                    </div>
+        
+                    <div class="bottom-the">
+                        <div class="descrizione-the">
+                            {{ element.descrizione }}
+                        </div>
+                        
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="no-prefe">
+        {% if search %}
+            <p>Nessun the trovato relativo alla ricerca</p>
+        {% else %}
+            <p>{{ user.username }} non ha nessun the tra i preferiti</p>
+        {% endif %}
+    </div>
+    
+    
+    
+{% endif %}
+
+
+
+<div class="search-div">
+    <form action="" class="search-form" method="post" >
+        {% csrf_token %}
+        <input type="search" name="search" placeholder="Cerca per nome ...">
+        <i class="fa fa-search"></i>
+        <button type="submit" style="display:none;"></button>
+        
+    </form>
+</div>
+
+{%endblock%}
